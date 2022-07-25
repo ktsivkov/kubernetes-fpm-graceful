@@ -21,7 +21,7 @@ spec:
       containers:
         - name: nginx
           imagePullPolicy: Always
-          image: ktsivkov/local-nginx
+          image: ktsivkov/local-nginx:latest
           ports:
             - containerPort: 80
           lifecycle:

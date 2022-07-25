@@ -21,7 +21,7 @@ spec:
       containers:
         - name: fpm
           imagePullPolicy: Always
-          image: ktsivkov/local-fpm:demo
+          image: ktsivkov/local-fpm:latest
           ports:
             - containerPort: 9000
           lifecycle:

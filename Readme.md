@@ -44,3 +44,8 @@ This actually helps with some more things, as sometimes we might install differe
 
 Please note that `preStop` starts running after kubernetes has sent the event to the ingress to stop the traffic to this service.
 But since this is done **asynchronously**, there might be some traffic that reaches the fpm before **ingress** updates its state.
+
+### NOTE:
+`process_control_timeout=5s"` - 5 seconds is the time, in which the last request needs to be done. If your application needs more time, for whatever reason, please adjust the other values as well.
+
+`process_control_timeout` should be less than `preStop`, and `preStop` should be also less than the `terminationGracePeriodSeconds`

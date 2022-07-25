@@ -24,3 +24,11 @@ spec:
           image: ktsivkov/local-nginx
           ports:
             - containerPort: 80
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - sh
+                  - '-c'
+                  - sleep 10 && /usr/sbin/nginx -s quit
+      terminationGracePeriodSeconds: 30

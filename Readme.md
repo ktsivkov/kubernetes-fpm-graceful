@@ -33,19 +33,17 @@ _Though this is not enough..._
                 command:
                   - sh
                   - '-c'
-                  - sleep 10 && kill -SIGQUIT 1
+                  - sleep 10
       terminationGracePeriodSeconds: 30
 ```
 
-By default, kubernetes kills all pods with a `SIGTERM` signal. This for PHP process, means it will be immediately suspended, and the setting of `process_control_timeout` will not be respected.
-For this reason Kubernetes gives us the lifecycle hooks like `preStop` which are bing ran before the `SIGTERM`.
-Inside the `preStop` hook, we are going to kill the master fpm process, with a `SIGQUIT`, which gives the **FPM** the time it needs, to run all the shutdown sequences it usually runs.
-This actually helps with some more things, as sometimes we might install different types of extensions on the fpm, which also have their own cleanup procedures.
-
-Please note that `preStop` starts running after kubernetes has sent the event to the ingress to stop the traffic to this service.
+Please note, that `preStop` starts running after kubernetes has sent the event to the ingress to stop the traffic to this service.
 But since this is done **asynchronously**, there might be some traffic that reaches the fpm before **ingress** updates its state.
 
 ### NOTE:
 `process_control_timeout=5s"` - 5 seconds is the time, in which the last request needs to be done. If your application needs more time, for whatever reason, please adjust the other values as well.
 
 `process_control_timeout` should be less than `preStop`, and `preStop` should be also less than the `terminationGracePeriodSeconds`
+
+### Special Thanks
+Special thanks to `Божидар Х.` who reported that Kubernetes is not actually killing the pods with `SIGTERM` by default, but respects the Dockerfile's `STOPSIGNAL`, which for fpm is `SIGQUIT`.
